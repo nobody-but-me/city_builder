@@ -26,6 +26,5 @@ body {
     color: var(--foreground);
 }
 
-.object {
-    image-rendering: pixelated;
+main {
 }
