@@ -9,13 +9,13 @@ A very tiny and cute city builder written with TypeScript, Next.js and TailwindC
 The best way to run this game in your local machine is using the development server:
 
 ```bash
-npm run dev
+$ npm run dev
 # or
-yarn dev
+$ yarn dev
 # or
-pnpm dev
+$ pnpm dev
 # or
-bun dev
+$ bun dev
 ```
 
 Then you just have to open the [http://localhost:3000](http://localhost:3000) address within your browser favourite browser.

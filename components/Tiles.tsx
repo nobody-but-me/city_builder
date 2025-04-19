@@ -1,13 +1,14 @@
+
 "use client";
 
 import React, { useEffect, useState } from 'react';
 
-import house from "@/assets/house_tile.webp";
-import grass from "@/assets/grass_tile.webp";
-import pine  from "@/assets/pine_tile.webp";
-import tree  from "@/assets/tree_tile.webp";
-import tent  from "@/assets/tent_tile.webp";
-import rock  from "@/assets/rock_tile.webp";
+import house from '@/public/house_tile.webp';
+import grass from '@/public/grass_tile.webp';
+import pine  from '@/public/pine_tile.webp';
+import tree  from '@/public/tree_tile.webp';
+import tent  from '@/public/tent_tile.webp';
+import rock  from '@/public/rock_tile.webp';
 
 
 export default function Tiles() {
@@ -41,7 +42,7 @@ export default function Tiles() {
     }, []);
     
     return (
-	<main className={`grid ${_MAX_TILE_COLS} gap-1`}>
+	<main className={`grid ${_MAX_TILE_COLS} gap-1 flex justify-center items-center`}>
 	    {
 		_tiles_map.map((_i, _j) => {
 		    return (
