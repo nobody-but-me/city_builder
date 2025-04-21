@@ -60,7 +60,6 @@ export default function Tiles() {
 		            alt={_i}
 		            
 		            className={_standard_tile_animation}
-		            style={{imageRendering: 'pixelated'}}
 			/>
 		    )
 		})
