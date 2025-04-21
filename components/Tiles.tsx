@@ -13,6 +13,7 @@ import {
     GetItems, 
 } from '@/components/Inventory.tsx';
 
+import naked_cherry from '@/public/naked_cherry_tile.webp';
 import house_preview from '@/public/house_tile.webp';
 import cherry from '@/public/cherry_tile.webp';
 import house from '@/public/house_tile.webp';
@@ -80,6 +81,10 @@ export default function Tiles() {
 			    _tile.src = grass.src;
 			    _tile.alt = grass.src;
 			    AddItem('wood', 1);
+			    break;
+			case cherry.src:
+			    _tile.src = naked_cherry.src;
+			    _tile.alt = naked_cherry.src;
 			    break;
 		    }
 		} 
