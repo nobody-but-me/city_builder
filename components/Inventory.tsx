@@ -12,11 +12,19 @@ import shovel from "@/public/shovel_tool.webp";
 const _MAX_ITEM_AMOUNT: number = 999;
 
 
-var _items: Array = {
+var _items: Dictionary = {
     'wood': 0,
     'rock': 0
 };
-var _current_selected_tool: string = 'hammer';
+var _tools: Array = [
+    hammer.src,
+    shovel.src
+];
+var _current_selected_tool: number = 1;
+
+export function GetCurrentTool() {
+    return _current_selected_tool;
+}
 
 export function AddItem(_item_: string, _quantity_: number) {
     _items[_item_] += _quantity_;
@@ -26,6 +34,19 @@ export function AddItem(_item_: string, _quantity_: number) {
 }
 
 export default function Inventory() {
+    
+    useEffect(() => {
+	let _tool = document.getElementById('tool');
+	_tool.addEventListener('mousedown', () => {
+	    if (_current_selected_tool < (_tools.length - 1)) {
+		_current_selected_tool += 1;
+	    } else {
+		_current_selected_tool = 0;
+	    }
+	    _tool.src = _tools[_current_selected_tool];
+	});
+    }, []);
+    
     return (<>
         <div className={`absolute left-0 top-0 p-8 origin-top-left grid grid-rows-5 gap-2 w-50`}>
     	    <div className={`flex justify-center flex-row items-center gap-3 w-full`}>
@@ -62,10 +83,11 @@ export default function Inventory() {
             className={`absolute right-0 bottom-0 p-2`}
         />
         <img
-            src={hammer.src}
+            src={_tools[_current_selected_tool]}
             height={115}
             width={115}
             alt="_item_"
+	    id='tool'
             className={`absolute right-0 bottom-0 p-2 hover:transition duration-200 hover:scale-125 flex justify-center items-center`}
         />
     </>)

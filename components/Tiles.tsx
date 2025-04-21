@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Inventory, AddItem } from '@/components/Inventory.tsx';
+import { Inventory, AddItem, GetCurrentTool } from '@/components/Inventory.tsx';
 
 import house from '@/public/house_tile.webp';
 import grass from '@/public/grass_tile.webp';
@@ -28,20 +28,22 @@ export default function Tiles() {
 	
 	for(let _i = 0; _i < _tiles.length; _i++) {
 	    _tiles[_i].onmousedown = () => {
-		const _tile = _tiles[_i];
-		
-		switch (_tile.alt) {
-		    case rock.src:
-			_tile.src = grass.src;
-			_tile.alt = grass.src;
-			AddItem('rock', 1);
-			break;
-		    case pine.src:
-		    case tree.src:
-			_tile.src = grass.src;
-			_tile.alt = grass.src;
-			AddItem('wood', 1);
-			break;
+		if (GetCurrentTool() === 1) {
+		    const _tile = _tiles[_i];
+		    
+		    switch (_tile.alt) {
+			case rock.src:
+			    _tile.src = grass.src;
+			    _tile.alt = grass.src;
+			    AddItem('rock', 1);
+			    break;
+			case pine.src:
+			case tree.src:
+			    _tile.src = grass.src;
+			    _tile.alt = grass.src;
+			    AddItem('wood', 1);
+			    break;
+		    }
 		}
 	    };
 	}
