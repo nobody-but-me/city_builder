@@ -3,6 +3,9 @@
 
 import React, { useEffect, useState } from 'react';
 
+import house_tile from "@/public/house_tile.webp";
+import tent_tile  from "@/public/tent_tile.webp";
+
 import item_slot from "@/public/item_slot.webp";
 import rock_item from "@/public/rock_item.webp";
 import wood_item from "@/public/wood_item.webp";
@@ -13,20 +16,32 @@ const _MAX_ITEM_AMOUNT: number = 999;
 
 
 var _items: Dictionary = {
-    'wood': 3,
-    'rock': 2
+    'wood': 4,
+    'rock': 3
 };
 var _tools: Array = [
     hammer.src,
     shovel.src
 ];
+var _buildings: Array = [
+    [house_tile.src, {'wood': 3, 'rock': 2}],
+    [tent_tile.src , {'wood': 1, 'rock': 1}],
+]
 var _current_selected_tool: number = 1;
+var _current_building: number = 1;
+
 
 export function GetCurrentTool() {
     return _current_selected_tool;
 }
+export function GetCurrentBuilding() {
+    return _current_building;
+}
 export function GetItems() {
     return _items;
+}
+export function GetBuildings() {
+    return _buildings;
 }
 
 export function AddItem(_item_: string, _quantity_: number) {
@@ -45,6 +60,7 @@ export function RemoveItem(_item_: string, _quantity_: number) {
 export default function Inventory() {
     
     useEffect(() => {
+	let _building = document.getElementById('building');
 	let _tool = document.getElementById('tool');
 	_tool.addEventListener('mousedown', () => {
 	    if (_current_selected_tool < (_tools.length - 1)) {
@@ -53,6 +69,22 @@ export default function Inventory() {
 		_current_selected_tool = 0;
 	    }
 	    _tool.src = _tools[_current_selected_tool];
+	    
+	    if (_current_selected_tool === 0) {
+		_building.classList.remove('hidden');
+	    }
+	    else {
+		_building.classList.add('hidden');
+	    }
+	    
+	    _building.addEventListener('mousedown', () => {
+		if (_current_building < (_buildings.length - 1)) {
+		    _current_building += 1;
+		} else {
+		    _current_building = 0;
+		}
+		_building.src = _buildings[_current_building][0];
+	    });
 	});
     }, []);
     
@@ -63,7 +95,7 @@ export default function Inventory() {
                     src={wood_item.src}
                     height={100}
                     width={100}
-                    alt="_rock_item_"
+                    alt='_rock_item_'
                     className={``}
                 />
                 <p id='wood-text' className={`w-full`}>
@@ -75,7 +107,7 @@ export default function Inventory() {
                     src={rock_item.src}
                     height={100}
                     width={100}
-                    alt="_rock_item_"
+                    alt='_rock_item_'
                     className={``}
                 />
                 <p id='rock-text' className={`w-full`}>
@@ -86,18 +118,29 @@ export default function Inventory() {
 	
         <img
             src={item_slot.src}
-            height={115}
-            width={115}
-            alt="_item_slot_"
-            className={`absolute right-0 bottom-0 p-2`}
+            height={100}
+            width={100}
+            alt='_item_slot_'
+            className={`absolute right-0 bottom-0`}
+	    style={{right: '10px', bottom: '10px'}}
         />
         <img
             src={_tools[_current_selected_tool]}
-            height={115}
-            width={115}
-            alt="_item_"
+            height={100}
+            width={100}
+            alt='_item_'
 	    id='tool'
-            className={`absolute right-0 bottom-0 p-2 hover:transition duration-200 hover:scale-125 flex justify-center items-center`}
+            className={`absolute right-0 bottom-0 hover:transition duration-200 hover:scale-125 flex justify-center items-center`}
+	    style={{right: '10px', bottom: '10px'}}
         />
+	<img 
+            src={_buildings[_current_building][0]}
+            height={100}
+            width={100}
+            alt='_building_'
+	    id='building'
+            className={`hidden absolute bottom-0 hover:transition duration-200 hover:scale-125 flex justify-center items-center`}
+	    style={{right: '110px', bottom: '10px'}}
+	/>
     </>)
 }
