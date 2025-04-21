@@ -13,8 +13,8 @@ const _MAX_ITEM_AMOUNT: number = 999;
 
 
 var _items: Dictionary = {
-    'wood': 0,
-    'rock': 0
+    'wood': 3,
+    'rock': 2
 };
 var _tools: Array = [
     hammer.src,
@@ -25,9 +25,18 @@ var _current_selected_tool: number = 1;
 export function GetCurrentTool() {
     return _current_selected_tool;
 }
+export function GetItems() {
+    return _items;
+}
 
 export function AddItem(_item_: string, _quantity_: number) {
     _items[_item_] += _quantity_;
+    let _text = document.getElementById(_item_ + '-text');
+    _text.innerHTML = _items[_item_];
+    return;
+}
+export function RemoveItem(_item_: string, _quantity_: number) {
+    _items[_item_] -= _quantity_;
     let _text = document.getElementById(_item_ + '-text');
     _text.innerHTML = _items[_item_];
     return;
