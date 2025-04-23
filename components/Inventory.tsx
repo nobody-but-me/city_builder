@@ -3,6 +3,8 @@
 
 import React, { useEffect, useState } from 'react';
 
+import pine_tile  from "@/public/saplings/pine_sapling0.webp";
+import tree_tile  from "@/public/saplings/tree_sapling0.webp";
 import house_tile from "@/public/house_tile.webp";
 import tent_tile  from "@/public/tent_tile.webp";
 
@@ -26,6 +28,8 @@ var _tools: Array = [
 var _buildings: Array = [
     [house_tile.src, {'wood': 3, 'rock': 2}],
     [tent_tile.src , {'wood': 1, 'rock': 1}],
+    [pine_tile.src , {'wood': 0, 'rock': 0}],
+    [tree_tile.src , {'wood': 0, 'rock': 0}],
 ]
 var _current_selected_tool: number = 1;
 var _current_building: number = 1;
