@@ -27,10 +27,10 @@ import rock  from '@/public/rock_tile.webp';
 export default function Tiles() {
     const _MAX_TILE_COLS: string = 'grid-cols-6';
     
-    const _standard_tile_animation: string = "tile transform h-38 w-24 hover:transition duration-200 hover:scale-125 flex justify-center items-center";
     const _tiles_map = [
-	grass.src, rock.src , pine.src  , cherry.src, pine.src , tent.src ,
-	tree.src , grass.src, cherry.src, tree.src  , grass.src, pine.src ,
+	grass.src, rock.src , pine.src  , cherry.src, pine.src , tent.src,
+	tree.src , grass.src, cherry.src, tree.src  , grass.src, pine.src,
+	rock.src , pine.src , grass.src , cherry.src, rock.src , tree.src,
 	rock.src , pine.src , grass.src , cherry.src, rock.src , tree.src
     ];
     
@@ -47,7 +47,7 @@ export default function Tiles() {
 	    let _tmp; 
 	    
 	    // that's a fucking mess
-	    _tiles[_i].onmouseover = () => {
+	    _tiles[_i].parentElement.onmouseover = () => {
 		_current_buildings = GetCurrentBuilding();
 		_tmp = _tile.alt;
 		
@@ -60,7 +60,7 @@ export default function Tiles() {
 		    }
 		}
 	    }
-	    _tiles[_i].onmouseout = () => {
+	    _tiles[_i].parentElement.onmouseout = () => {
 		if (GetCurrentTool() === 0) {
 		    if (_tile.alt === _buildings[_current_buildings][0]) {
 			_tile.src = _tmp;
@@ -68,7 +68,7 @@ export default function Tiles() {
 		    }
 		}
 	    }
-	    _tiles[_i].onmousedown = () => {
+	    _tiles[_i].parentElement.onmousedown = () => {
 		if (GetCurrentTool() === 1) {
 		    switch (_tile.alt) {
 			case rock.src:
@@ -102,24 +102,27 @@ export default function Tiles() {
 	    };
 	}
     }, []);
+    
     return (
-	<main className={`grid ${_MAX_TILE_COLS} gap-1 flex justify-center items-center`}>
+	<main className={`grid ${_MAX_TILE_COLS} gap-1 flex justify-center`}>
 	    {
 		_tiles_map.map((_i, _j) => {
 		    return (
-			<img
-		            height={100}
-		            width={100}
-		                    
-		            key={_j}
-		            src={_i}
-		            alt={_i}
-		            
-		            className={_standard_tile_animation}
-			/>
+			<div key={_j} className={`min-h-25 min-w-25 relative rounded-x1 hover:transition duration-200 hover:scale-125`}>
+			    <img
+			        height={100}
+			        width={100}
+			        
+			        src={_i}
+			        alt={_i}
+			        
+			        className={`tile pointer-events-none absolute bottom-0 min-h-25 min-w-25`}
+			    />
+			</div>
 		    )
 		})
 	    }
 	</main>
     )
 }
+// absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-3/5
