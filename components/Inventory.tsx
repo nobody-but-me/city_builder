@@ -12,8 +12,10 @@ import grass_tile from "@/public/grass_tile.webp";
 import item_slot from "@/public/item_slot.webp";
 import rock_item from "@/public/rock_item.webp";
 import wood_item from "@/public/wood_item.webp";
+
 import hammer from "@/public/hammer_tool.webp";
 import shovel from "@/public/shovel_tool.webp";
+import hoe    from "@/public/hoe_tool.webp";
 
 const _MAX_ITEM_AMOUNT: number = 999;
 
@@ -23,8 +25,9 @@ var _items: Dictionary = {
     'rock': 3
 };
 var _tools: Array = [
+    shovel.src,
     hammer.src,
-    shovel.src
+    hoe.src
 ];
 var _buildings: Array = [
     [house_tile.src, {'wood': 3, 'rock': 2}],
@@ -32,7 +35,7 @@ var _buildings: Array = [
     [pine_tile.src , {'wood': 0, 'rock': 0}],
     [tree_tile.src , {'wood': 0, 'rock': 0}],
 ]
-var _current_selected_tool: number = 1;
+var _current_selected_tool: number = 0;
 var _current_building: number = 1;
 
 
@@ -78,20 +81,20 @@ export default function Inventory() {
 
 
             _building.forEach(_b => {
-	            if (_current_selected_tool === 0) {
+	            if (_current_selected_tool === 1) {
                     _b.classList.remove('hidden');
 	            } else {
 		            _b.classList.add('hidden');
 	            }
             });
-	        document.getElementById('bbutton').addEventListener('mousedown', () => {
-		        if (_current_building < (_buildings.length - 1)) {
-		            _current_building += 1;
-		        } else {
-		            _current_building = 0;
-		        }
-		        document.getElementById('bbutton').src = _buildings[_current_building][0];
-	        });
+	    });
+	    document.getElementById('bbutton').addEventListener('mousedown', () => {
+		    if (_current_building < (_buildings.length - 1)) {
+		        _current_building += 1;
+		    } else {
+		        _current_building = 0;
+		    }
+		    document.getElementById('bbutton').src = _buildings[_current_building][0];
 	    });
     }, []);
 
@@ -130,7 +133,7 @@ export default function Inventory() {
                    height={100}
                    width={100}
                    alt='_item_slot_'
-                   className={`absolute right-0 bottom-0`}
+                   className={`absolute right-0 bottom-0 pointer-events-none`}
        	        style={{right: '10px', bottom: '10px'}}
                />
                <img
@@ -147,7 +150,7 @@ export default function Inventory() {
                    height={100}
                    width={100}
                    alt='_building_'
-                   className={`building hidden absolute bottom-0`}
+                   className={`building hidden absolute bottom-0 pointer-events-none`}
        	        style={{right: '110px', bottom: '10px'}}
        	    />
        	    <img

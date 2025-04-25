@@ -98,7 +98,7 @@ export default function Tiles() {
 				_current_buildings = GetCurrentBuilding();
 				_tmp = _tile.alt;
 
-				if (GetCurrentTool() === 0) {
+				if (GetCurrentTool() === 1) {
 					if (_tile.alt === none.src) {
 						if (_items['wood'] >= _buildings[_current_buildings][1]['wood'] && _items['rock'] >= _buildings[_current_buildings][1]['rock']) {
 							_tile.src = _buildings[_current_buildings][0];
@@ -110,7 +110,7 @@ export default function Tiles() {
 				}
 			}
 			_tile.parentElement.onmouseout = () => {
-				if (GetCurrentTool() === 0) {
+				if (GetCurrentTool() === 1) {
 					if (_tile.classList.contains('preview')) {
 						_tile.src = _tmp;
 						_tile.alt = _tmp;
@@ -121,7 +121,7 @@ export default function Tiles() {
 			}
 			// Building and removing tiles
 			_tile.parentElement.onmousedown = () => {
-				if (GetCurrentTool() === 1) {
+				if (GetCurrentTool() === 0) {
 					switch (_tile.alt) {
 						case rock.src:
 							_tile.src = none.src;
@@ -140,7 +140,7 @@ export default function Tiles() {
 							break;
 					}
 				}
-				else if (GetCurrentTool() === 0) {
+				else if (GetCurrentTool() === 1) {
 					if (_items['wood'] >= _buildings[_current_buildings][1]['wood'] && _items['rock'] >= _buildings[_current_buildings][1]['rock']) {
 						if (_tmp === none.src) {
 							_tile.src = _buildings[_current_buildings][0];
