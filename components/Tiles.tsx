@@ -21,6 +21,8 @@ import tree_saplings_tile0 from "@/public/saplings/tree_sapling0.webp";
 import tree_saplings_tile1 from "@/public/saplings/tree_sapling1.webp";
 import tree_saplings_tile2 from "@/public/saplings/tree_sapling2.webp";
 
+import dry_plowed_land from '@/public/dry_plowed_land.webp';
+import wet_plowed_land from '@/public/wet_plowed_land.webp';
 import naked_cherry from '@/public/naked_cherry_tile.webp';
 import house_preview from '@/public/house_tile.webp';
 import cherry from '@/public/cherry_tile.webp';
@@ -30,6 +32,7 @@ import pine  from '@/public/pine_tile.webp';
 import tree  from '@/public/tree_tile.webp';
 import tent  from '@/public/tent_tile.webp';
 import rock  from '@/public/rock_tile.webp';
+import bush  from "@/public/bush_tile.webp";
 import none  from '@/public/none.webp';
 
 
@@ -37,10 +40,10 @@ export default function Tiles() {
     const _MAX_TILE_COLS: string = 'grid-cols-6';
     
     const _tiles_map = [
-		none.src  , rock.src, pine.src  , cherry.src, pine.src , tent.src,
-		tree.src  , rock.src, cherry.src, tree.src  , none.src , pine.src,
-		rock.src  , pine.src, none.src  , cherry.src, rock.src , tree.src,
-		cherry.src, pine.src, rock.src  , none.src  , rock.src , tree.src
+		bush.src  , rock.src, pine.src  , cherry.src, pine.src , bush.src,
+		tree.src  , rock.src, cherry.src, tree.src  , bush.src , pine.src,
+		rock.src  , pine.src, bush.src  , cherry.src, rock.src , tree.src,
+		cherry.src, pine.src, rock.src  , bush.src  , rock.src , tree.src
     ];
     
     // TODO: perhaps there are better ways to do the game loop.
@@ -92,47 +95,64 @@ export default function Tiles() {
 			const _tile = _tiles[_i];
 			let _tmp;
 
+			let _overlay = _tile.parentElement.querySelector('.overlay');
 			// that's a fucking mess
 			// tile preview when the hammer is selected
+			// PREVIEW ON
 			_tile.parentElement.onmouseover = () => {
 				_current_buildings = GetCurrentBuilding();
-				_tmp = _tile.alt;
+				_tmp = _overlay.alt;
 
 				if (GetCurrentTool() === 1) {
-					if (_tile.alt === none.src) {
+					if (_tile.alt === none.src || _tile.alt === dry_plowed_land.src || _tile.alt === wet_plowed_land.src) {
 						if (_items['wood'] >= _buildings[_current_buildings][1]['wood'] && _items['rock'] >= _buildings[_current_buildings][1]['rock']) {
-							_tile.src = _buildings[_current_buildings][0];
-							_tile.alt = _buildings[_current_buildings][0];
+							_overlay.src = _buildings[_current_buildings][0];
+							_overlay.alt = _buildings[_current_buildings][0];
 
-							_tile.classList.add('preview');
+							_overlay.classList.add('preview');
 						}
 					}
 				}
 			}
+			// PREVIEW OUT
 			_tile.parentElement.onmouseout = () => {
 				if (GetCurrentTool() === 1) {
-					if (_tile.classList.contains('preview')) {
-						_tile.src = _tmp;
-						_tile.alt = _tmp;
+					if (_overlay.classList.contains('preview')) {
+						_overlay.src = _tmp;
+						_overlay.alt = _tmp;
 
-						_tile.classList.remove('preview');
+						_overlay.classList.remove('preview');
 					}
 				}
 			}
-			// Building and removing tiles
+			// Building and removing tiles// SHOVEL
 			_tile.parentElement.onmousedown = () => {
-				if (GetCurrentTool() === 0) {
+				let _current_tool: number = GetCurrentTool();
+				// SHOVEL
+				if (_current_tool === 0) {
 					switch (_tile.alt) {
+						case bush.src:
+						case naked_cherry.src:
+							_tile.src = none.src;
+							_tile.alt = none.src;
+							break;
+						case dry_plowed_land.src:
+							let _overlay = _tile.parentElement.querySelector('.overlay');
+							if (_overlay.src === none.src) {
+								_tile.src = none.src;
+								_tile.alt = none.src;
+								break;
+							}
 						case rock.src:
 							_tile.src = none.src;
 							_tile.alt = none.src;
-							AddItem('rock', 1);
+							AddItem('rock', 2);
 							break;
 						case pine.src:
 						case tree.src:
 							_tile.src = none.src;
 							_tile.alt = none.src;
-							AddItem('wood', 1);
+							AddItem('wood', 3);
 							break;
 						case cherry.src:
 							_tile.src = naked_cherry.src;
@@ -140,15 +160,41 @@ export default function Tiles() {
 							break;
 					}
 				}
-				else if (GetCurrentTool() === 1) {
+				// HAMMER
+				else if (_current_tool === 1) {
 					if (_items['wood'] >= _buildings[_current_buildings][1]['wood'] && _items['rock'] >= _buildings[_current_buildings][1]['rock']) {
-						if (_tmp === none.src) {
-							_tile.src = _buildings[_current_buildings][0];
-							_tile.alt = _buildings[_current_buildings][0];
-							RemoveItem('wood', _buildings[_current_buildings][1]['wood']);
-							RemoveItem('rock', _buildings[_current_buildings][1]['rock']);
-							_tmp = _buildings[_current_buildings][0];
+						let _tile_: string = _buildings[_current_buildings][1]['tile'];
+						switch (_tile_) {
+							case 'none':
+								if (_tile.alt === none.src) {
+									RemoveItem('wood', _buildings[_current_buildings][1]['wood']);
+									RemoveItem('rock', _buildings[_current_buildings][1]['rock']);
+									_tile.src = _buildings[_current_buildings][0];
+									_tile.alt = _buildings[_current_buildings][0];
+									_tmp = none.src;
+									break;
+								}
+							case 'plowed':
+								if (_tile.alt === dry_plowed_land.src || _tile.alt === wet_plowed_land.src) {
+									if (_buildings[_current_buildings][1]['tile'] === 'plowed') {
+										RemoveItem('wood', _buildings[_current_buildings][1]['wood']);
+										RemoveItem('rock', _buildings[_current_buildings][1]['rock']);
+										let _overlay = _tile.parentElement.querySelector('.overlay');
+										_overlay.src = _buildings[_current_buildings][0];
+										_overlay.alt = _buildings[_current_buildings][0];
+										_tmp = _buildings[_current_buildings][0];
+									}
+								}
+								break;
 						}
+					}
+				}
+				// HOE
+				else if (_current_tool === 2) {
+					if (_tile.alt === none.src) {
+						_tile.src = dry_plowed_land.src;
+						_tile.alt = dry_plowed_land.src;
+						// _tmp = _buildings[_current_buildings][0];
 					}
 				}
 			};
@@ -165,7 +211,7 @@ export default function Tiles() {
 
 					const _darker = (_r + _c) % 2 !== 0;
 					return (
-						<div key={_j} className={`tilep min-h-25 min-w-25 relative rounded-x1 hover:transition duration-200 hover:scale-125`}>
+						<div key={_j} className={`tilep min-h-25 min-w-25 relative rounded-x1 hover:transition duration-200 hover:scale-125 select-none`}>
 							<img
 						        height={100}
 						        width={100}
@@ -186,6 +232,15 @@ export default function Tiles() {
 						        alt={_i}
 
 						        className={`tile pointer-events-none absolute bottom-0 min-h-25 min-w-25`}
+							/>
+							<img
+						        height={100}
+						        width={100}
+
+						        src={none.src}
+						        alt={none.src}
+
+						        className={`overlay pointer-events-none absolute bottom-0 min-h-25 min-w-25`}
 							/>
 							</div>
 					)
