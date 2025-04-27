@@ -3,6 +3,8 @@
 
 import React, { useEffect, useState } from 'react';
 
+import floppy_disk  from "@/public/floppydisk.webp";
+
 import carrot  from "@/public/plantations/carrot0.webp";
 
 import pine_tile  from "@/public/saplings/pine_sapling0.webp";
@@ -163,6 +165,17 @@ export default function Inventory() {
             alt='_building_'
             className={`building hidden absolute bottom-0 select-none`}
        	style={{right: '110px', bottom: '10px'}}
+        />
+	    
+	    
+        <img
+            src={floppy_disk.src}
+            height={100}
+            width={100}
+            alt='floppydisk'
+            id='floppydisk'
+            className={`absolute right-0 top-0 hover:transition duration-200 hover:scale-125 flex justify-center items-center select-none`}
+            style={{right: '10px', bottom: '10px'}}
         />
     </>)
 }

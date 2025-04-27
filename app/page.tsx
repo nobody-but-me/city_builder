@@ -15,25 +15,17 @@ export default function Home() {
     const _on_user_click = async () => {
 	let _text_input = document.getElementById('user-input');
 	if (_text_input.value === "") {
-	    alert('input is empty');
+	    alert("Input can't be empty! Please, provide an username!");
 	    return;
 	}
 	const supabase = await createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 	const { data: users } = await supabase.from('users').select();
-	// let _json_data = JSON.stringify(users, null, 2);
-	// alert(_json_data);
-	
-	const { data, error } = await supabase.from('users').select().eq('username', _text_input.value);
-	if (Object.keys(data).length !== 0)
-	{
-	    let _welcome = `<b>Welcome back, ${_text_input.value}</b>`;
-	    document.getElementById('user').classList.replace('w-[80vh]', 'w-[55vh]');
-	    document.getElementById('user').classList.replace('h-[60vh]', 'h-[40vh]');
-	    document.getElementById('user').innerHTML = _welcome;
+
+	const _log_in = () => {
 	    setTimeout(() => {
 		document.getElementById('black-screen').remove();
 		document.getElementById('user').remove();
-		
+		// I hate web programming.
 		let     _i = document.getElementsByTagName('Tiles');
 		let     _d = document.getElementsByClassName('tile-container');
 		for(let _k=0; _k < _d.length; _k++) {
@@ -41,9 +33,25 @@ export default function Home() {
 		}
 	    }, 1200);
 	}
+	
+	const { data, error } = await supabase.from('users').select().eq('username', _text_input.value);
+	if (Object.keys(data).length !== 0)
+	{
+	    let _welcome = `<b>Welcome back, ${_text_input.value}!</b>`;
+	    document.getElementById('user').classList.replace('w-[80vh]', 'w-[55vh]');
+	    document.getElementById('user').classList.replace('h-[60vh]', 'h-[40vh]');
+	    document.getElementById('user').innerHTML = _welcome;
+	    _log_in();
+	}
 	else {
 	    const { error } = await supabase.from("users").insert({ id: (Object.keys(users).length + 1), username: _text_input.value, password: _text_input.value }).select();
-	    alert('user created');
+	    console.log('user created.');
+	    
+	    let _welcome = `<b>Be welcome, ${_text_input.value}!</b>`;
+	    document.getElementById('user').classList.replace('w-[80vh]', 'w-[55vh]');
+	    document.getElementById('user').classList.replace('h-[60vh]', 'h-[40vh]');
+	    document.getElementById('user').innerHTML = _welcome;
+	    _log_in();
 	}
     };
     
