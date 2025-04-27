@@ -3,7 +3,6 @@
 
 import React, { useEffect, useState } from 'react';
 
-
 import carrot  from "@/public/plantations/carrot0.webp";
 
 import pine_tile  from "@/public/saplings/pine_sapling0.webp";
