@@ -11,21 +11,34 @@ import standard_box  from "@/public/standard_box.webp";
 import none  from "@/public/none.webp";
 
 export default function Home() {
+    var _login_state: number = 0;
+    var _new_user: bool = false;
+    var _username: string = "";
+    var _password: string = "";
     
-    const _on_user_click = async () => {
-	let _text_input = document.getElementById('user-input');
-	if (_text_input.value === "") {
-	    alert("Input can't be empty! Please, provide an username!");
+    // maybe this code sucks. If so, sorry for that.
+    const _user_input = async () => {
+	let user_input = document.getElementById('user-input');
+	if (user_input.value === "") {
+	    alert("Text input can't be empty!");
 	    return;
 	}
+	
 	const supabase = await createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 	const { data: users } = await supabase.from('users').select();
-
+	let user_button = document.getElementById('user-button');
+	let user_text = document.getElementById('user-text');
+	let user = document.getElementById('user');
+	
 	const _log_in = () => {
+	    user.classList.replace('w-[80vh]', 'w-[55vh]');
+	    user.classList.replace('h-[60vh]', 'h-[40vh]');
+	    let _welcome = `<b>Let's finally start to play!</b>`;
+	    document.getElementById('user').innerHTML = _welcome;
+	    // I hate web programming
 	    setTimeout(() => {
 		document.getElementById('black-screen').remove();
-		document.getElementById('user').remove();
-		// I hate web programming.
+		user.remove();
 		let     _i = document.getElementsByTagName('Tiles');
 		let     _d = document.getElementsByClassName('tile-container');
 		for(let _k=0; _k < _d.length; _k++) {
@@ -34,26 +47,37 @@ export default function Home() {
 	    }, 1200);
 	}
 	
-	const { data, error } = await supabase.from('users').select().eq('username', _text_input.value);
-	if (Object.keys(data).length !== 0)
-	{
-	    let _welcome = `<b>Welcome back, ${_text_input.value}!</b>`;
-	    document.getElementById('user').classList.replace('w-[80vh]', 'w-[55vh]');
-	    document.getElementById('user').classList.replace('h-[60vh]', 'h-[40vh]');
-	    document.getElementById('user').innerHTML = _welcome;
-	    _log_in();
+	if (_login_state === 0) {
+	    const { data, error } = await supabase.from('users').select().eq('username', user_input.value);
+	    _username = user_input.value;
+	    if (Object.keys(data).length === 0) {
+		user_text.innerHTML = `<b>Welcome, ${user_input.value}! Since that's your first time here, could you please create a password for your account?</b>`;
+		_new_user = true;
+	    } else {
+		user_text.innerHTML = `<b>Welcome back, ${user_input.value}, could you please provide your password?</b>`;
+	    }
+	    user.classList.replace('w-[80vh]', 'w-[100vh]');
+	    user_button.innerHTML = `Play!`;
+	    user_input.value = "";
+	    _login_state = 1;
+	    return;
+	} else {
+	    const { data, error } = await supabase.from('users').select().eq('password', user_input.value);
+	    if (_new_user === false) {
+		if (Object.keys(data).length === 0) {
+		    alert("That's not the right password for this user! Try again.");
+		    user_input.value = "";
+		    return;
+		} else {
+		    _log_in();
+		}
+	    } else {
+		_password = user_input.value;
+		const { error } = await supabase.from("users").insert({ id: (Object.keys(users).length + 1), username: _username, password: _password }).select();
+		_log_in();
+	    }
 	}
-	else {
-	    const { error } = await supabase.from("users").insert({ id: (Object.keys(users).length + 1), username: _text_input.value, password: _text_input.value }).select();
-	    console.log('user created.');
-	    
-	    let _welcome = `<b>Be welcome, ${_text_input.value}!</b>`;
-	    document.getElementById('user').classList.replace('w-[80vh]', 'w-[55vh]');
-	    document.getElementById('user').classList.replace('h-[60vh]', 'h-[40vh]');
-	    document.getElementById('user').innerHTML = _welcome;
-	    _log_in();
-	}
-    };
+    }
     
     return (
 	<div className="w-screen h-screen flex items-center justify-center p-2">
@@ -65,7 +89,7 @@ export default function Home() {
 	        <br />
 	        <input id='user-input' name="user_name_input" className={`rounded-xl text-center border-5 border-solid border-black-500 hover:border-blue-500 w-[50vh]`} />
 	        <br />
-	        <Button variant="primary" _on_click={_on_user_click} _id="user-button">Join!</Button>
+	        <Button variant="primary" _on_click={_user_input} _id="user-button">Join!</Button>
 	    </div>
 	    <Inventory />
 	    <Tiles />

@@ -83,14 +83,14 @@ export default function Inventory() {
 		        _current_selected_tool = 0;
 	        }
 	        _tool.src = _tools[_current_selected_tool];
-
-            _building.forEach(_b => {
+		
+		_building.forEach(_b => {
 	            if (_current_selected_tool === 1) {
-                    _b.classList.remove('hidden');
+			_b.classList.remove('hidden');
 	            } else {
-		            _b.classList.add('hidden');
+		        _b.classList.add('hidden');
 	            }
-            });
+		});
 	    });
 	    document.getElementById('bbutton').addEventListener('mousedown', () => {
 		    if (_current_building < (_buildings.length - 1)) {
